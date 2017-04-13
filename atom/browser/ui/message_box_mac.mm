@@ -71,10 +71,14 @@ NSAlert* CreateNSAlert(NativeWindow* parent_window,
 
   switch (type) {
     case MESSAGE_BOX_TYPE_INFORMATION:
-      [alert setAlertStyle:NSInformationalAlertStyle];
+      alert.alertStyle = NSAlertStyleInformational;
       break;
     case MESSAGE_BOX_TYPE_WARNING:
-      [alert setAlertStyle:NSWarningAlertStyle];
+    case MESSAGE_BOX_TYPE_ERROR:
+      // NSAlertStyleWarning shows the app icon while NSAlertStyleCritical
+      // shows a warning icon with an app icon badge. Since there is no
+      // error variant, lets just use NSAlertStyleCritical.
+      alert.alertStyle = NSAlertStyleCritical;
       break;
     default:
       break;
@@ -192,7 +196,7 @@ void ShowErrorBox(const base::string16& title, const base::string16& content) {
   NSAlert* alert = [[NSAlert alloc] init];
   [alert setMessageText:base::SysUTF16ToNSString(title)];
   [alert setInformativeText:base::SysUTF16ToNSString(content)];
-  [alert setAlertStyle:NSWarningAlertStyle];
+  [alert setAlertStyle:NSAlertStyleCritical];
   [alert runModal];
   [alert release];
 }
